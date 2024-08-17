@@ -1,0 +1,12 @@
+{
+    "mysqlConnectionString": "user:password@tcp(127.0.0.1:3306)/databasename",
+    "outputPath": "/path/to/output",
+    "postStatuses": {"published": true, "draft": false},
+    "setUnpublishedToNow": false,
+    "publishDrafts": false,
+    "ghostUrl": "https://example.com",
+    "linkReplacements": {
+        "https://example.com": "https://nojs.example.com",
+        "https://www.example.com": "https://nojs.example.com"
+    }
+}

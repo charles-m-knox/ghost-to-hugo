@@ -1,0 +1,4 @@
+ghost-to-hugo
+config.json
+config.*.json
+*.out
