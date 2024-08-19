@@ -1,0 +1,7 @@
+.containerignore
+.gitignore
+config*.json
+containerfile
+ghost-to-hugo
+README.md
+simple

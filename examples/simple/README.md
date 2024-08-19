@@ -27,3 +27,28 @@ If your mysql database is only accessible behind an ssh tunnel, you can use ssh 
 ```bash
 ssh -L 3306:127.0.0.1:3306 user@server
 ```
+
+## Alternative: podman/docker container image
+
+If you prefer not to build from source, you can use the pre-built container image.
+
+You must first create a `config.json` just like above, and ensure that the output directory is going to exist within the container.
+
+```bash
+podman run --rm -it \
+    -v "$(pwd)/config.json:/config.json:ro" \
+    -v "/path/to/output:/path/to/output" \
+    git.cmcode.dev/cmcode/ghost-to-hugo:simple-mysql
+```
+
+Note: If you're using an SSH port forwarding mechanism for the mysql database connection, you may want to consider adding `--network host` to the above `podman run` command.
+
+### Building the container image
+
+```bash
+podman build \
+    --build-arg GOSUMDB="${GOSUMDB}" \
+    --build-arg GOPROXY="${GOPROXY}" \
+    -f containerfile \
+    -t git.cmcode.dev/cmcode/ghost-to-hugo:simple-mysql .
+```
