@@ -8,31 +8,6 @@ import (
 	"strings"
 )
 
-// <img src="https://techedcollab.org/content/images/2024/08/Laptop_PC_Battery_Removed-1.jpg" class="kg-image" alt="" loading="lazy" width="1920" height="1280" srcset="https://techedcollab.org/content/images/size/w600/2024/08/Laptop_PC_Battery_Removed-1.jpg 600w, https://techedcollab.org/content/images/size/w1000/2024/08/Laptop_PC_Battery_Removed-1.jpg 1000w, https://techedcollab.org/content/images/size/w1600/2024/08/Laptop_PC_Battery_Removed-1.jpg 1600w, https://techedcollab.org/content/images/2024/08/Laptop_PC_Battery_Removed-1.jpg 1920w" sizes="(min-width: 720px) 720px">
-
-// https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#browser_compatibility
-// type img struct {
-// 	Alt                     string `xml:"alt,attr"`
-// 	Attributionsrc          string `xml:"attributionsrc,attr"`
-// 	Border                  string `xml:"border,attr"`
-// 	Class                   string `xml:"class,attr"`
-// 	Crossorigin             string `xml:"crossorigin,attr"`
-// 	Decoding                string `xml:"decoding,attr"`
-// 	Fetchpriority           string `xml:"fetchpriority,attr"`
-// 	Height                  string `xml:"height,attr"`
-// 	Ismap                   string `xml:"ismap,attr"`
-// 	Loading                 string `xml:"loading,attr"`
-// 	NoReferrerWhenDowngrade string `xml:"no-referrer-when-downgrade,attr"`
-// 	OriginWhenCrossOrigin   string `xml:"origin-when-cross-origin,attr"`
-// 	Referrerpolicy          string `xml:"referrerpolicy,attr"`
-// 	Sizes                   string `xml:"sizes,attr"`
-// 	Src                     string `xml:"src,attr"`
-// 	Srcset                  string `xml:"srcset,attr"`
-// 	UnsafeURL               string `xml:"unsafe-url,attr"`
-// 	Usemap                  string `xml:"usemap,attr"`
-// 	Width                   string `xml:"width,attr"`
-// }
-
 // replaceLinks naively assumes that there are links to replace, and it assumes
 // that the link replacement map is initialized.
 func (c *Config) replaceInLink(href string) string {
