@@ -1,6 +1,6 @@
 filippo.io/edwards25519 v1.1.0 h1:FNf4tywRC1HmFuKW5xopWpigGjJKiJSV0Cqo0cJWDaA=
 filippo.io/edwards25519 v1.1.0/go.mod h1:BxyFTGdWcka3PhytdK4V28tE5sGfRvvvRV7EaN4VDT4=
-git.cmcode.dev/cmcode/ghost-to-hugo v0.0.0-20240819031239-22b5e7826873 h1:gPFt24j1uTl2Md0+MvECqGct7QWAY+7QTaILFeK8Zeg=
-git.cmcode.dev/cmcode/ghost-to-hugo v0.0.0-20240819031239-22b5e7826873/go.mod h1:PPWtpIZPmAux/h4AD2szkdP+bq+FtKqD04ze1vO+55M=
+git.cmcode.dev/cmcode/ghost-to-hugo v0.0.1 h1:G6opcwsn+wFaY7durEiJ1untyiwjbU7Y0pj9qlKdpZo=
+git.cmcode.dev/cmcode/ghost-to-hugo v0.0.1/go.mod h1:PPWtpIZPmAux/h4AD2szkdP+bq+FtKqD04ze1vO+55M=
 github.com/go-sql-driver/mysql v1.8.1 h1:LedoTUt/eveggdHS9qUFC1EFSa8bU2+1pZjSRpvNJ1Y=
 github.com/go-sql-driver/mysql v1.8.1/go.mod h1:wEBSXgmK//2ZFJyE+qWnIsVGmvmEKlqwuVSjsCm7DZg=
