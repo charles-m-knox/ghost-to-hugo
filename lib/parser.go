@@ -71,6 +71,9 @@ func (c *Config) ProcessHTML(s string) (string, error) {
 	for {
 		t, err := x.Token()
 		if err != nil { // EOF
+			if err.Error() != "EOF" {
+				return "", fmt.Errorf("token parsing error: %v", err.Error())
+			}
 			break
 		}
 

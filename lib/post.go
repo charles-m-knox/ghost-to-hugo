@@ -18,7 +18,7 @@ import (
 //
 //	`
 //	---
-//	pageTitle: "{{ Post.Title }}"
+//	pageTitle: {{ Post.Title }}
 //	# ...
 //	---
 //	`
@@ -62,7 +62,11 @@ type Config struct {
 	SetUnpublishedToNow bool `json:"setUnpublishedToNow"`
 	// If true, all posts will not be marked as drafts.
 	PublishDrafts bool `json:"publishDrafts"`
-	// A mapping of strings to replace within <a href=""> tags.
+	// A mapping of strings to replace within <a href=""> tags. This will only
+	// be done if ReplaceLinks is set to true (which will under normal
+	// circumstances be determined if a non-zero length map is provided for
+	// LinkReplacements, but if you are doing something abnormal, you should set
+	// ReplaceLinks to true manually.)
 	LinkReplacements map[string]string `json:"linkReplacements"`
 	// The template that will be rendered.
 	//
@@ -71,9 +75,9 @@ type Config struct {
 	//
 	//  `
 	//  ---
-	//  {{ .FrontMatterConfig.Title }}: "{{ .Post.Title }}"
+	//  {{ .FrontMatterConfig.Title }}: {{ .Post.Title }}
 	//  {{ .FrontMatterConfig.Date }}: "{{ .Post.PublishedAt }}"
-	//  {{ .FrontMatterConfig.Draft }}: "{{ .Post.IsDraft }}"
+	//  {{ .FrontMatterConfig.Draft }}: {{ .Post.IsDraft }}
 	//  customProperty: customValue # etc.
 	//  ---
 	//
@@ -91,6 +95,11 @@ type Config struct {
 	// If true, <a href=""> tags will have each key replaced with its respective
 	// value. This is useful for swapping things like http://example.com with
 	// https://nojs.example.com.
+	//
+	// Typically this gets set to true if using the
+	// expected workflow for this program, but if you are doing something
+	// out of the ordinary, please set this to true and then use the
+	// LinkReplacements map to define link replacements.
 	ReplaceLinks bool
 }
 
@@ -177,64 +186,12 @@ newsletter_id as NewsletterId,
 show_title_and_feature_image as ShowTitleAndFeatureImage
 `
 
-const ghostPostStatusDraft = "draft"
+const GhostPostStatusDraft = "draft"
 
-// GetGhostPost parses an SQL row-yielding iterator and returns a [GhostPost]
-// from it.
-//
-// Usage:
-//
-// rows, err := db.Query(fmt.Sprintf("SELECT %v FROM posts LIMIT 10", g2h.QUERY_POSTS_FIELDS))
-//
-//	if err != nil {
-//		log.Fatalf("failed to query posts from db: %v", err.Error())
-//	}
-//
-//	defer rows.Close()
-//
-//	for rows.Next() {
-//			post, err := ghosttohugo.GetGhostPost(rows)
-//			if err != nil {
-//			// ...
-//		}
-//	}
-func (c *Config) GetGhostPost(rows *sql.Rows) (GhostPost, error) {
-	var post GhostPost
-
-	err := rows.Scan(
-		&post.ID,
-		&post.UUID,
-		&post.Title,
-		&post.Slug,
-		&post.Mobiledoc,
-		&post.Lexical,
-		&post.HTML,
-		&post.CommentID,
-		&post.Plaintext,
-		&post.FeatureImage,
-		&post.Featured,
-		&post.Type,
-		&post.Status,
-		&post.Locale,
-		&post.Visibility,
-		&post.EmailRecipientFilter,
-		&post.SqlCreatedAt,
-		&post.CreatedBy,
-		&post.SqlUpdatedAt,
-		&post.UpdatedBy,
-		&post.SqlPublishedAt,
-		&post.PublishedBy,
-		&post.CustomExcerpt,
-		&post.CodeinjectionHead,
-		&post.CodeinjectionFoot,
-		&post.CustomTemplate,
-		&post.CanonicalUrl,
-		&post.NewsletterId,
-		&post.ShowTitleAndFeatureImage,
-	)
-	if err != nil {
-		return post, fmt.Errorf("failed to marshal row into interface: %v", err.Error())
-	}
+// ProcessGhostPost is called by [GetGhostPost] and fills in/processes fields
+// that are required in order for this module to fulfill its intended purpose.
+func (c *Config) ProcessGhostPost(post GhostPost) (GhostPost, error) {
+	var err error
 
 	post.CreatedAt, err = time.Parse("2006-01-02 15:04:05", post.SqlCreatedAt)
 	if err != nil {
@@ -262,7 +219,7 @@ func (c *Config) GetGhostPost(rows *sql.Rows) (GhostPost, error) {
 	}
 
 	// determine if it is a draft or not (needed later)
-	if post.Status == ghostPostStatusDraft {
+	if post.Status == GhostPostStatusDraft {
 		post.IsDraft = true
 	}
 
@@ -273,11 +230,41 @@ func (c *Config) GetGhostPost(rows *sql.Rows) (GhostPost, error) {
 	return post, nil
 }
 
+// GetGhostPost parses an SQL row-yielding iterator and returns a [GhostPost]
+// from it.
+//
+// Usage:
+//
+// rows, err := db.Query(fmt.Sprintf("SELECT %v FROM posts LIMIT 10", g2h.QUERY_POSTS_FIELDS))
+//
+//	if err != nil {
+//		log.Fatalf("failed to query posts from db: %v", err.Error())
+//	}
+//
+//	defer rows.Close()
+//
+//	for rows.Next() {
+//			post, err := ghosttohugo.GetGhostPost(rows)
+//			if err != nil {
+//			// ...
+//		}
+//	}
+func (c *Config) GetGhostPost(rows *sql.Rows) (GhostPost, error) {
+	var post GhostPost
+
+	err := rows.Scan(&post.ID, &post.UUID, &post.Title, &post.Slug, &post.Mobiledoc, &post.Lexical, &post.HTML, &post.CommentID, &post.Plaintext, &post.FeatureImage, &post.Featured, &post.Type, &post.Status, &post.Locale, &post.Visibility, &post.EmailRecipientFilter, &post.SqlCreatedAt, &post.CreatedBy, &post.SqlUpdatedAt, &post.UpdatedBy, &post.SqlPublishedAt, &post.PublishedBy, &post.CustomExcerpt, &post.CodeinjectionHead, &post.CodeinjectionFoot, &post.CustomTemplate, &post.CanonicalUrl, &post.NewsletterId, &post.ShowTitleAndFeatureImage)
+	if err != nil {
+		return post, fmt.Errorf("failed to marshal row into interface: %v", err.Error())
+	}
+
+	return c.ProcessGhostPost(post)
+}
+
 const parsedTemplateName = "template"
 
-// parseTemplate parses the user-configured template. This should only need to
+// ParseTemplate parses the user-configured template. This should only need to
 // be run once.
-func (conf *Config) parseTemplate() error {
+func (conf *Config) ParseTemplate() error {
 	var err error
 
 	conf.template, err = template.New(parsedTemplateName).Parse(conf.Template)
@@ -335,9 +322,9 @@ func (c *Config) RenderString(post GhostPost) (string, error) {
 
 // Default values used in the config if not set.
 const (
-	defaultRawShortcodeStart = "{{< rawhtml >}}"
-	defaultRawShortcodeEnd   = "{{</ rawhtml >}}"
-	defaultTemplate          = `---
+	DefaultRawShortcodeStart = "{{< rawhtml >}}"
+	DefaultRawShortcodeEnd   = "{{</ rawhtml >}}"
+	DefaultTemplate          = `---
 {{ .FrontMatterConfig.Title }}: |
   {{ .Post.Title }}
 {{ .FrontMatterConfig.Date }}: "{{ .PostDate }}"
@@ -352,11 +339,15 @@ isPost: true
 `
 )
 
-// applyDefaults applies sensible defaults to the config if left unconfigured.
-func (c *Config) applyDefaults() {
+// ApplyDefaults applies sensible defaults to the config if left unconfigured.
+// You shouldn't normally need to execute this, because it's called
+// automatically by [LoadConfig].
+func (c *Config) ApplyDefaults() {
 	if c.Template == "" {
-		c.Template = defaultTemplate
+		c.Template = DefaultTemplate
 	}
+
+	// warning: if you change any of these, please update the unit tests!
 
 	if len(c.PostStatuses) == 0 {
 		c.PostStatuses = map[string]bool{"published": true, "draft": false}
@@ -371,39 +362,40 @@ func (c *Config) applyDefaults() {
 	}
 
 	if c.RawShortcodeStart == "" {
-		c.RawShortcodeStart = defaultRawShortcodeStart
+		c.RawShortcodeStart = DefaultRawShortcodeStart
 	}
 
 	if c.RawShortcodeEnd == "" {
-		c.RawShortcodeEnd = defaultRawShortcodeEnd
+		c.RawShortcodeEnd = DefaultRawShortcodeEnd
 	}
 
-	c.FrontMatter.applyDefaults()
+	c.FrontMatter.ApplyDefaults()
 }
 
 // Default value that is used for front matter in lieu of a user-configured
 // value.
 const (
-	defaultFrontMatterTitle = "title"
-	defaultFrontMatterDate  = "date"
-	defaultFrontMatterSlug  = "slug"
-	defaultFrontMatterDraft = "draft"
+	DefaultFrontMatterTitle = "title"
+	DefaultFrontMatterDate  = "date"
+	DefaultFrontMatterSlug  = "slug"
+	DefaultFrontMatterDraft = "draft"
 )
 
-// applyDefaults applies sensible defaults to the front matter config if left
-// unconfigured.
-func (f *FrontMatterConfig) applyDefaults() {
+// ApplyDefaults applies sensible defaults to the front matter config if left
+// unconfigured. You shouldn't normally need to execute this, because it's
+// called automatically by [LoadConfig].
+func (f *FrontMatterConfig) ApplyDefaults() {
 	if f.Title == "" {
-		f.Title = defaultFrontMatterTitle
+		f.Title = DefaultFrontMatterTitle
 	}
 	if f.Date == "" {
-		f.Date = defaultFrontMatterDate
+		f.Date = DefaultFrontMatterDate
 	}
 	if f.Draft == "" {
-		f.Draft = defaultFrontMatterDraft
+		f.Draft = DefaultFrontMatterDraft
 	}
 	if f.Slug == "" {
-		f.Slug = defaultFrontMatterSlug
+		f.Slug = DefaultFrontMatterSlug
 	}
 }
 
@@ -421,9 +413,10 @@ func (c *Config) makeOutputDir() error {
 	return nil
 }
 
-// process makes a few changes to the config based on the user-provided
-// configuration.
-func (c *Config) process() {
+// Process makes a few changes to the config based on the user-provided
+// configuration. You shouldn't normally need to execute this, because it's
+// called automatically by [LoadConfig].
+func (c *Config) Process() {
 	if c.LinkReplacements == nil {
 		c.LinkReplacements = make(map[string]string)
 	}
@@ -445,15 +438,15 @@ func LoadConfig(f string) (Config, error) {
 		return Config{}, fmt.Errorf("failed to unmarshal config from %v: %v", f, err)
 	}
 
-	c.applyDefaults()
-	c.process()
+	c.ApplyDefaults()
+	c.Process()
 
 	err = c.makeOutputDir()
 	if err != nil {
 		return c, fmt.Errorf("failed to make output dir when loading config: %w", err)
 	}
 
-	err = c.parseTemplate()
+	err = c.ParseTemplate()
 	if err != nil {
 		return c, fmt.Errorf("failed to parse template when loading config: %w", err)
 	}
