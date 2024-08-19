@@ -275,7 +275,11 @@ func (conf *Config) ParseTemplate() error {
 	return nil
 }
 
-type postTemplate struct {
+// PostTemplate is what's passed to the template directly. Your configuration's
+// template string can use any field from here. For example:
+//
+//	`{{ .Post.FeatureImage }}`
+type PostTemplate struct {
 	FrontMatterConfig FrontMatterConfig
 	Post              GhostPost
 	PostDate          string // Post's date rendered as a standard string
@@ -305,7 +309,7 @@ func (c *Config) RenderString(post GhostPost) (string, error) {
 	}
 
 	b := bytes.NewBuffer([]byte{})
-	err = c.template.Execute(b, postTemplate{
+	err = c.template.Execute(b, PostTemplate{
 		FrontMatterConfig: c.FrontMatter,
 		Post:              post,
 		PostDate:          post.PublishedAt.Format(time.RFC3339),

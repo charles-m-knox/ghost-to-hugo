@@ -8,5 +8,6 @@
     "linkReplacements": {
         "https://example.com": "https://nojs.example.com",
         "https://www.example.com": "https://nojs.example.com"
-    }
+    },
+    "template": "---\n{{ .FrontMatterConfig.Title }}: |\n  {{ .Post.Title }}\n{{ .FrontMatterConfig.Date }}: \"{{ .PostDate }}\"\n{{ .FrontMatterConfig.Draft }}: {{ .Post.IsDraft }}\n{{ .FrontMatterConfig.Slug }}: {{ .Post.Slug }}\nisPost: true\n---\n\n{{ .RawShortcodeStart }}\n{{ .PostHTML }}\n{{ .RawShortcodeEnd }}\n"
 }

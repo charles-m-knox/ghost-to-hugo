@@ -18,6 +18,8 @@ go build -v
 # done
 ```
 
+Depending on your Hugo application's configuration/theme/etc, you will likely need to change the default template. This is a little tricky because of JSON's syntax, but the `config.example.json` file demonstrates what a valid template looks like.
+
 ## Tips for connecting to a remote mysql db
 
 If your mysql database is only accessible behind an ssh tunnel, you can use ssh forwarding:
