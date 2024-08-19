@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	ghosttohugo "git.cmcode.dev/cmcode/ghost-to-hugo/lib"
+	ghosttohugo "git.cmcode.dev/cmcode/ghost-to-hugo/pkg/lib"
 )
 
 // `<p>Test</p><figure class="foo"><img height="900" width="200" src="foo.png"></figure><p>Test 2</p>`

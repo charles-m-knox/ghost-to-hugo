@@ -3,7 +3,7 @@ package ghosttohugo_test
 import (
 	"testing"
 
-	ghosttohugo "git.cmcode.dev/cmcode/ghost-to-hugo/lib"
+	ghosttohugo "git.cmcode.dev/cmcode/ghost-to-hugo/pkg/lib"
 )
 
 func TestProcessHTML(t *testing.T) {
