@@ -6,14 +6,14 @@ This example connects to a mysql database and puts markdown files into the speci
 
 ```bash
 git clone https://git.cmcode.dev/cmcode/ghost-to-hugo.git
-cd ghost-to-hugo
+cd examples/simple
 cp config.example.json config.json
 
 # now, edit config.json to meet your needs
 
 go get -v
 go build -v
-./ghost-to-hugo -f config.json
+./simple -f config.json
 
 # done
 ```

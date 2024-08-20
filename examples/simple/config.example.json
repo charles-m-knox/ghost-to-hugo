@@ -2,6 +2,7 @@
     "mysqlConnectionString": "user:password@tcp(127.0.0.1:3306)/databasename",
     "outputPath": "/path/to/output",
     "postStatuses": {"published": true, "draft": false},
+    "postVisibilities": {"public": true, "paid": false},
     "setUnpublishedToNow": false,
     "publishDrafts": false,
     "ghostUrl": "https://example.com",
