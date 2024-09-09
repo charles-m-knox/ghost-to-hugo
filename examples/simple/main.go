@@ -7,7 +7,7 @@ import (
 	"log"
 	"time"
 
-	g2h "git.cmcode.dev/cmcode/ghost-to-hugo/pkg/lib"
+	g2h "github.com/charles-m-knox/ghost-to-hugo/pkg/lib"
 	_ "github.com/go-sql-driver/mysql"
 )
 

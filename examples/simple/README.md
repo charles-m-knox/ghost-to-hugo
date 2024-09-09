@@ -5,7 +5,7 @@ This example connects to a mysql database and puts markdown files into the speci
 ## Usage
 
 ```bash
-git clone https://git.cmcode.dev/cmcode/ghost-to-hugo.git
+git clone https://github.com/charles-m-knox/ghost-to-hugo.git
 cd examples/simple
 cp config.example.json config.json
 
@@ -38,7 +38,7 @@ You must first create a `config.json` just like above, and ensure that the outpu
 podman run --rm -it \
     -v "$(pwd)/config.json:/config.json:ro" \
     -v "/path/to/output:/path/to/output" \
-    git.cmcode.dev/cmcode/ghost-to-hugo:simple-mysql
+    github.com/charles-m-knox/ghost-to-hugo:simple-mysql
 ```
 
 Note: If you're using an SSH port forwarding mechanism for the mysql database connection, you may want to consider adding `--network host` to the above `podman run` command.
@@ -50,5 +50,5 @@ podman build \
     --build-arg GOSUMDB="${GOSUMDB}" \
     --build-arg GOPROXY="${GOPROXY}" \
     -f containerfile \
-    -t git.cmcode.dev/cmcode/ghost-to-hugo:simple-mysql .
+    -t github.com/charles-m-knox/ghost-to-hugo:simple-mysql .
 ```
