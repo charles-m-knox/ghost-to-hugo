@@ -38,7 +38,7 @@ You must first create a `config.json` just like above, and ensure that the outpu
 podman run --rm -it \
     -v "$(pwd)/config.json:/config.json:ro" \
     -v "/path/to/output:/path/to/output" \
-    github.com/charles-m-knox/ghost-to-hugo:simple-mysql
+    ghcr.io/charles-m-knox/ghost-to-hugo:simple-mysql
 ```
 
 Note: If you're using an SSH port forwarding mechanism for the mysql database connection, you may want to consider adding `--network host` to the above `podman run` command.
@@ -50,5 +50,5 @@ podman build \
     --build-arg GOSUMDB="${GOSUMDB}" \
     --build-arg GOPROXY="${GOPROXY}" \
     -f containerfile \
-    -t github.com/charles-m-knox/ghost-to-hugo:simple-mysql .
+    -t ghcr.io/charles-m-knox/ghost-to-hugo:simple-mysql .
 ```
